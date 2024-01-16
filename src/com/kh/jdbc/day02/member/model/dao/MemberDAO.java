@@ -114,6 +114,46 @@ public class MemberDAO {
 		}
 		return member;
 	}
+	public Member selectOneById2(String memberId, String memberPw) {
+		String query = "SELECT * FROM MEMBER_TBL WHERE MEMBER_ID = ?"
+				+"AND MEMBER_PWD = ?";
+		Member member = null;
+		try {
+			Class.forName(DRIVER_NAME);
+			Connection conn = DriverManager.getConnection(url, username, password);
+			PreparedStatement pstmt = conn.prepareStatement(query);//쿼리문 미리 컴파일
+			pstmt.setString(1, memberId);
+			pstmt.setString(2, memberPw);
+			ResultSet rset = pstmt.executeQuery();//쿼리문 미리 컴파일하고
+			//위치홀더 값 세팅후 실행 및 결과 받기
+			member = new Member();
+			if(rset.next()) {
+				member.setMemberName(rset.getString("MEMBER_NAME"));
+				member.setGender(rset.getString("GENDER").charAt(0));//젠더는 한글자여서 문자 처리
+				member.setMemberId(rset.getString("MEMBER_ID"));
+				member.setMemberPw(rset.getString("MEMBER_PWD"));
+				member.setAge(rset.getInt("AGE"));
+				member.setEmail(rset.getString("EMAIL"));
+				member.setPhone(rset.getString("PHONE"));
+				member.setAddress(rset.getString("ADDRESS"));
+				member.setHobby(rset.getString("HOBBY"));
+				member.setEnrollDate(rset.getDate("ENROLL_DATE"));
+			}
+			else {
+				member = null;
+			}
+			rset.close();
+			pstmt.close();
+			conn.close();
+		} catch (ClassNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (SQLException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
+		return member;
+	}
 	public void insertMember(Member member) {
 		try {
 			final String query = "INSERT INTO MEMBER_TBL VALUES('"

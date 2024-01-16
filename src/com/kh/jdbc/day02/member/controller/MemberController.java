@@ -19,6 +19,10 @@ public class MemberController {
 		Member member = mDao.selectOneById(memberId);
 		return member;
 	}
+	public Member printOneById2(String memberId, String memberPw) {
+		Member member = mDao.selectOneById2(memberId, memberPw);
+		return member;
+	}
 	
 	public List<Member> printAll() {
 		List<Member> mList = mDao.selectAll();
