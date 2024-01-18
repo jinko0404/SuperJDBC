@@ -53,7 +53,6 @@ public class ChattingServer {
 			} finally {
 	            sc.close();
 	        }
-			sc.close();
 	}
 
 }
