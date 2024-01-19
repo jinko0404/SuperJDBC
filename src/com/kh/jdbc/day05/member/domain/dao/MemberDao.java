@@ -1,5 +1,9 @@
 package com.kh.jdbc.day05.member.domain.dao;
 
+import java.io.FileNotFoundException;
+import java.io.FileReader;
+import java.io.IOException;
+import java.io.Reader;
 import java.sql.*;
 import java.util.*;
 
@@ -7,19 +11,34 @@ import com.kh.jdbc.day05.member.common.JDBCTemplate;
 import com.kh.jdbc.day05.member.domain.vo.Member;
 
 public class MemberDao {
+	private Properties pro;
 	private JDBCTemplate jdbcTemplate;
 
 	public MemberDao() {
 		jdbcTemplate = JDBCTemplate.getInstance();
+		pro = new Properties();
+		@SuppressWarnings("unused")
+		Reader reader = null;
+		try {
+			reader = new FileReader("src/resources/query.properties");
+			pro.load(reader);
+		} catch (FileNotFoundException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		} catch (IOException e) {
+			// TODO Auto-generated catch block
+			e.printStackTrace();
+		}
 	}
 	
 	public void updateMember(Member member) {
-		String query = "UPDATE MEMBER_TBL "
-				+ "SET MEMBER_PWD = ?"
-				+ ", EMAIL = ?"
-				+ ", PHONE = ?"
-				+ ", ADDRESS = ?"
-				+ ", HOBBY = ? WHERE MEMBER_ID = ?";
+//		String query = "UPDATE MEMBER_TBL "
+//				+ "SET MEMBER_PWD = ?"
+//				+ ", EMAIL = ?"
+//				+ ", PHONE = ?"
+//				+ ", ADDRESS = ?"
+//				+ ", HOBBY = ? WHERE MEMBER_ID = ?";
+		final String query = pro.getProperty("updateMember");
 		try {
 			Connection conn = jdbcTemplate.getConnection();
 			PreparedStatement pstmt = conn.prepareStatement(query);
@@ -45,7 +64,8 @@ public class MemberDao {
 	}
 	
 	public void deleteMember(String memberId) {
-		String query = "DELETE FROM MEMBER_TBL WHERE MEMBER_ID = ?";
+//		String query = "DELETE FROM MEMBER_TBL WHERE MEMBER_ID = ?";
+		final String query = pro.getProperty("deleteMember");
 		try {
 			Connection conn = jdbcTemplate.getConnection();
 			PreparedStatement pstmt = conn.prepareStatement(query);
@@ -136,7 +156,8 @@ public class MemberDao {
 	}
 	public int insertMember(Member member) {
 		try {
-			final String query = "INSERT INTO MEMBER_TBL VALUES(?,?,?,?,?,?,?,?,?,SYSDATE)";
+			//final String query = "INSERT INTO MEMBER_TBL VALUES(?,?,?,?,?,?,?,?,?,SYSDATE)";
+			final String query = pro.getProperty("insertMember");
 			Connection conn = jdbcTemplate.getConnection();
 			PreparedStatement pstmt = conn.prepareStatement(query);//쿼리문 미리 컴파일
 			pstmt.setString(1, member.getMemberId());
@@ -166,7 +187,8 @@ public class MemberDao {
 		List<Member> mList = null;
 		try {
 			Member member = null;
-			final String query = "SELECT * FROM MEMBER_TBL";
+//			final String query = "SELECT * FROM MEMBER_TBL";
+			final String query = pro.getProperty("selectAllMember");
 			Connection conn = jdbcTemplate.getConnection();
 			PreparedStatement pstmt = conn.prepareStatement(query);
 			ResultSet rset = pstmt.executeQuery(); //초록색 재생버튼 누름
